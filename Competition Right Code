@@ -1,0 +1,166 @@
+*** Settings ***
+Library    SeleniumLibrary
+
+*** Variables ***
+${URL}          https://trial.uc.ac.id
+${USERNAME}     bchristoper@student.ciputra.ac.id
+${PASSWORD}     2004-07-31
+
+*** Test Cases ***
+Skenario Lengkap Dari Login Hingga Mengisi Form
+    Open Browser    ${URL}    chrome
+    Maximize Browser Window
+    Input Text      name=username    ${USERNAME}
+    Input Text      name=password    ${PASSWORD}
+    Click Button    xpath=//button[contains(text(),'Sign In')]
+
+    # Menunggu dan mengklik tombol menu utama (hamburger icon)
+    Wait Until Element Is Visible    xpath=//button[./i[contains(@class, 'fa-bars')]]    timeout=10s
+    Click Button    xpath=//button[./i[contains(@class, 'fa-bars')]]
+
+    # Verifikasi bahwa menu utama telah terbuka
+    Wait Until Element Is Visible    id=mainmenu-modal    timeout=5s
+    Log             Menu utama berhasil dibuka.
+
+    # Mengklik link 'My Activity' di dalam menu
+    Click Element   xpath=//a[contains(text(), 'My Activity')]
+    Log             Berhasil mengklik 'My Activity'.
+
+    # Scroll ke bawah di dalam menu untuk menemukan dan mengklik "Competition"
+    ${COMPETITION_MENU_ACCORDION}=    Set Variable    xpath=//a[contains(text(), 'Competition')]
+    Scroll Element Into View         ${COMPETITION_MENU_ACCORDION}
+    Wait Until Element Is Visible    ${COMPETITION_MENU_ACCORDION}
+    Click Element   ${COMPETITION_MENU_ACCORDION}
+    Log             Berhasil scroll dan klik 'Competition'.
+
+    # Verifikasi bahwa panel Competition terbuka
+    ${status_akhir}=    Get Element Attribute    ${COMPETITION_MENU_ACCORDION}    aria-expanded
+    Should Be Equal As Strings       ${status_akhir}    true
+    Log             Verifikasi Berhasil: Panel 'Competition' terbuka.
+
+    # Setelah panel terbuka, cari dan klik link 'Competition List'
+    ${COMPETITION_LIST_LINK}=    Set Variable    xpath=//a[contains(text(), 'Competition List')]
+    Wait Until Element Is Visible    ${COMPETITION_LIST_LINK}    timeout=5s
+    Click Element   ${COMPETITION_LIST_LINK}
+    Log             Berhasil mengklik link 'Competition List'.
+
+    # Klik tombol '+ New Competition'
+    ${NEW_COMPETITION_BUTTON}=    Set Variable    xpath=//a[contains(@class, 'btn-primary') and normalize-space(.)='New Competition']
+    Wait Until Element Is Visible    ${NEW_COMPETITION_BUTTON}    timeout=10s
+    Wait Until Element Is Enabled    ${NEW_COMPETITION_BUTTON}    timeout=10s
+    Scroll Element Into View         ${NEW_COMPETITION_BUTTON}
+    Click Element   ${NEW_COMPETITION_BUTTON}
+    Log             Berhasil mengklik tombol 'New Competition'.
+
+    # Mengisi kolom 'Competition Name'
+    ${NAMA_KOMPETISI_INPUT}=      Set Variable    xpath=//input[@placeholder='Competition Name']
+    Wait Until Element Is Visible    ${NAMA_KOMPETISI_INPUT}
+    Input Text      ${NAMA_KOMPETISI_INPUT}    halo
+    Log             Berhasil mengisi 'Competition Name' dengan teks 'halo'.
+
+    # Memilih 'UKM' dari dropdown 'Represent'
+    ${REPRESENT_DROPDOWN}=          Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[@title='-Represent-']]
+    ${REPRESENT_SEARCH_FIELD}=      Set Variable    css=input.select2-search__field
+    ${REPRESENT_OPTION_UKM}=        Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='UKM']
+    ${REPRESENT_VERIFY}=            Set Variable    xpath=//span[@class='select2-selection__rendered' and text()='UKM']
+    Wait Until Element Is Visible    ${REPRESENT_DROPDOWN}
+    Click Element   ${REPRESENT_DROPDOWN}
+    Wait Until Element Is Visible    ${REPRESENT_SEARCH_FIELD}
+    Click Element   ${REPRESENT_OPTION_UKM}
+    Wait Until Element Is Visible    ${REPRESENT_VERIFY}
+    Log             Berhasil memilih 'UKM' dari dropdown 'Represent'.
+
+    # Memilih 'International' dari dropdown 'Competition Scale'
+    ${SKALA_DROPDOWN}=              Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[@title='-Competition Scale-']]
+    ${SKALA_SEARCH_FIELD}=          Set Variable    css=input.select2-search__field
+    ${SKALA_OPTION_INTERNATIONAL}=  Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='International']
+    ${SKALA_VERIFY}=                Set Variable    xpath=//span[@class='select2-selection__rendered' and text()='International']
+    Wait Until Element Is Visible    ${SKALA_DROPDOWN}
+    Click Element   ${SKALA_DROPDOWN}
+    Wait Until Element Is Visible    ${SKALA_SEARCH_FIELD}
+    Click Element   ${SKALA_OPTION_INTERNATIONAL}
+    Wait Until Element Is Visible    ${SKALA_VERIFY}
+    Log             Berhasil memilih 'International' dari dropdown 'Competition Scale'.
+
+    # Memilih 'Andreas Jodhinata' dari dropdown 'Competition PIC'
+    ${PIC_DROPDOWN}=                Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[@title='Competition PIC']]
+    ${PIC_SEARCH_FIELD}=            Set Variable    css=input.select2-search__field
+    ${PIC_OPTION_ANDREAS}=          Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='1101126801 - Andreas Jodhinata']
+    ${PIC_VERIFY}=                  Set Variable    xpath=//span[@class='select2-selection__rendered' and text()='1101126801 - Andreas Jodhinata']
+    Wait Until Element Is Visible    ${PIC_DROPDOWN}
+    Click Element   ${PIC_DROPDOWN}
+    Wait Until Element Is Visible    ${PIC_SEARCH_FIELD}
+    Click Element   ${PIC_OPTION_ANDREAS}
+    Wait Until Element Is Visible    ${PIC_VERIFY}
+    Log             Berhasil memilih '1101126801 - Andreas Jodhinata' dari dropdown 'Competition PIC'.
+
+    # Mengisi kolom 'Contact PIC'
+    ${KONTAK_PIC_INPUT}=              Set Variable    xpath=//input[@placeholder='Contact PIC']
+    Wait Until Element Is Visible    ${KONTAK_PIC_INPUT}
+    Input Text      ${KONTAK_PIC_INPUT}    halo
+    Log             Berhasil mengisi 'Contact PIC' dengan teks 'halo'.
+
+    # Mengisi kolom 'Description'
+    ${DESKRIPSI_TEXTAREA}=          Set Variable    xpath=//textarea[@placeholder='Description']
+    Wait Until Element Is Visible    ${DESKRIPSI_TEXTAREA}
+    Input Text      ${DESKRIPSI_TEXTAREA}    Ini adalah deskripsi kompetisi.
+    Log             Berhasil mengisi kolom 'Description'.
+
+    # Mengisi kolom 'Website/Facebook/Instagram/etc'
+    ${WEBSITE_INPUT}=                 Set Variable    xpath=//input[@placeholder='Website/Facebook/Instagram/etc']
+    Wait Until Element Is Visible    ${WEBSITE_INPUT}
+    Input Text      ${WEBSITE_INPUT}    halo
+    Log             Berhasil mengisi 'Website/Facebook/Instagram/etc' dengan teks 'halo'.
+
+    # Mengisi kolom 'Criteria'
+    ${KRITERIA_TEXTAREA}=           Set Variable    xpath=//textarea[@placeholder='Criteria']
+    Wait Until Element Is Visible    ${KRITERIA_TEXTAREA}
+    Input Text      ${KRITERIA_TEXTAREA}    Ini adalah deskripsi Criteria.
+    Log             Berhasil mengisi kolom 'Criteria'.
+
+    # Memilih 'Others' dari dropdown 'Competition Category'
+    ${KATEGORI_DROPDOWN}=           Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[contains(@title, '-Competition Category-')]]
+    ${KATEGORI_OPTION_OTHERS}=      Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='Others']
+    ${KATEGORI_VERIFY}=             Set Variable    xpath=//span[@class='select2-selection__rendered' and contains(text(), 'Others')]
+    Click Element   ${KATEGORI_DROPDOWN}
+    Wait Until Element Is Visible    css=input.select2-search__field
+    Log             Dropdown 'Competition Category' berhasil dibuka.
+    ${KATEGORI_ELEMENT_SCROLL}=     Get WebElement    ${KATEGORI_OPTION_OTHERS}
+    Execute Javascript    arguments[0].scrollIntoView(true);    ARGUMENTS    ${KATEGORI_ELEMENT_SCROLL}
+    Log             Berhasil scroll di dalam dropdown ke opsi 'Others'.
+    Wait Until Element Is Visible    ${KATEGORI_OPTION_OTHERS}
+    Click Element   ${KATEGORI_OPTION_OTHERS}
+    Wait Until Element Is Visible    ${KATEGORI_VERIFY}
+    Log             VERIFIKASI BERHASIL: Kategori 'Others' sudah terpilih.
+
+    # Memilih 'Team/Group' dari dropdown 'Competition Type'
+    ${TIPE_DROPDOWN}=               Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[@title='-Competition Type-']]
+    ${TIPE_SEARCH_FIELD}=           Set Variable    css=input.select2-search__field
+    ${TIPE_OPTION_TEAM}=            Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='Team/Group']
+    ${TIPE_VERIFY}=                 Set Variable    xpath=//span[@class='select2-selection__rendered' and text()='Team/Group']
+    Wait Until Element Is Visible    ${TIPE_DROPDOWN}
+    Click Element   ${TIPE_DROPDOWN}
+    Wait Until Element Is Visible    ${TIPE_SEARCH_FIELD}
+    Click Element   ${TIPE_OPTION_TEAM}
+    Wait Until Element Is Visible    ${TIPE_VERIFY}
+    Log             Berhasil memilih 'Team/Group' dari dropdown 'Competition Type'.
+
+    # Mengisi kolom 'Venue'
+    ${VENUE_INPUT}=                   Set Variable    xpath=//input[@placeholder='Venue']
+    Wait Until Element Is Visible    ${VENUE_INPUT}
+    Input Text      ${VENUE_INPUT}    Ini adalah deskripsi kompetisi.
+    Log             Berhasil mengisi kolom 'Venue'.
+
+    # Mengisi kolom 'Registration Fee'
+    ${BIAYA_REGISTRASI_INPUT}=      Set Variable    xpath=//input[@placeholder='Registration Fee']
+    Wait Until Element Is Visible    ${BIAYA_REGISTRASI_INPUT}
+    Input Text      ${BIAYA_REGISTRASI_INPUT}    Ini adalah deskripsi kompetisi.
+    Log             Berhasil mengisi kolom 'Registration Fee'.
+
+    # Mengisi kolom 'Information Link'
+    ${LINK_INFORMASI_INPUT}=        Set Variable    xpath=//input[@placeholder='Information Link']
+    Wait Until Element Is Visible    ${LINK_INFORMASI_INPUT}
+    Input Text      ${LINK_INFORMASI_INPUT}    Ini adalah deskripsi kompetisi.
+    Log             Berhasil mengisi kolom 'Information Link'.
+
+    # Klik tombol 'Submit'
