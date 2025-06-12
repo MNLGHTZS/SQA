@@ -162,4 +162,7 @@ Skenario Lengkap Dari Login Hingga Mengisi Form
     Scroll Element Into View         ${SUBMIT_FORM_BUTTON}
     Wait Until Element Is Visible    ${SUBMIT_FORM_BUTTON}
     Click Element   ${SUBMIT_FORM_BUTTON}
-    Log
+    
+
+    Log Menunggu 20 detik sebelum skrip selesai...
+    Sleep           20s
