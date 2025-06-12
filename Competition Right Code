@@ -3,8 +3,8 @@ Library    SeleniumLibrary
 
 *** Variables ***
 ${URL}          https://trial.uc.ac.id
-${USERNAME}     bchristoper@student.ciputra.ac.id
-${PASSWORD}     2004-07-31
+${USERNAME}     (disembunyikan karena di post untuk public)
+${PASSWORD}     (disembunyikan karena di post untuk public)
 
 *** Test Cases ***
 Skenario Lengkap Dari Login Hingga Mengisi Form
