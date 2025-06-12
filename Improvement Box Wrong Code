@@ -1,0 +1,92 @@
+*** Settings ***
+Library    SeleniumLibrary
+
+*** Variables ***
+${URL}            https://trial.uc.ac.id
+${USERNAME}       bchristoper@student.ciputra.ac.id
+${PASSWORD}       2004-07-31
+
+*** Test Cases ***
+Skenario Lengkap Dari Login Hingga Mengisi Form
+    Open Browser    ${URL}    chrome
+    Maximize Browser Window
+    Input Text      name=username    ${USERNAME}
+    Input Text      name=password    ${PASSWORD}
+    Click Button    xpath=//button[contains(text(),'Sign In')]
+
+    # Menunggu dan mengklik tombol menu utama (hamburger icon)
+    Wait Until Element Is Visible    xpath=//button[./i[contains(@class, 'fa-bars')]]    timeout=10s
+    Click Button    xpath=//button[./i[contains(@class, 'fa-bars')]]
+
+    # Verifikasi bahwa menu utama telah terbuka
+    Wait Until Element Is Visible    id=mainmenu-modal    timeout=5s
+    Log    Menu utama berhasil dibuka.
+
+    # Mengklik link 'My Activity' di dalam menu
+    Click Element    xpath=//a[contains(text(), 'My Activity')]
+    Log    Berhasil mengklik 'My Activity'.
+
+    # Scroll ke bawah di dalam menu untuk menemukan dan mengklik "Improvement Box"
+    ${IMPROVEMENT_BOX_LINK}=    Set Variable    xpath=//a[contains(text(), 'Improvement Box')]
+    Scroll Element Into View    ${IMPROVEMENT_BOX_LINK}
+    Wait Until Element Is Visible    ${IMPROVEMENT_BOX_LINK}
+    Click Element    ${IMPROVEMENT_BOX_LINK}
+    Log    Berhasil scroll dan klik 'Improvement Box'.
+
+    # Verifikasi bahwa panel Improvement Box terbuka
+    ${status_akhir}=    Get Element Attribute    ${IMPROVEMENT_BOX_LINK}    aria-expanded
+    Should Be Equal As Strings    ${status_akhir}    true
+    Log    Verifikasi Berhasil: Panel 'Improvement Box' terbuka.
+
+    # Setelah panel terbuka, cari dan klik link 'Suggest Improvement'
+    ${SUGGEST_LINK}=    Set Variable    xpath=//a[contains(text(), 'Suggest Improvement')]
+    Wait Until Element Is Visible    ${SUGGEST_LINK}    timeout=5s
+    Click Element    ${SUGGEST_LINK}
+    Log    Berhasil mengklik link 'Suggest Improvement'.
+
+    # Memilih 'Complaint' dari dropdown 'Type'
+    ${TYPE_DROPDOWN_CONTAINER}=    Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[@title='- Choose Type -']]
+    ${DROPDOWN_SEARCH_FIELD}=      Set Variable    css=input.select2-search__field
+    ${COMPLAINT_OPTION}=           Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='Complaint']
+    ${SELECTED_TEXT_VERIFY}=       Set Variable    xpath=//span[@class='select2-selection__rendered' and text()='Complaint']
+
+    Wait Until Element Is Visible    ${TYPE_DROPDOWN_CONTAINER}
+    Click Element    ${TYPE_DROPDOWN_CONTAINER}
+    Wait Until Element Is Visible    ${DROPDOWN_SEARCH_FIELD}
+    Click Element    ${COMPLAINT_OPTION}    
+    Wait Until Element Is Visible    ${SELECTED_TEXT_VERIFY}
+    Log    Berhasil memilih 'Complaint' dari dropdown 'Type'.
+
+ # Definisikan locator untuk dropdown "Category"
+    ${CATEGORY_DROPDOWN_CONTAINER}=    Set Variable    xpath=//span[contains(@class, 'select2-selection--single') and .//span[contains(@title, '- Choose Category -')]]
+    ${CATEGORY_OPTION_BMA2}=           Set Variable    xpath=//li[contains(@class, 'select2-results__option') and text()='(BMA2) Mentoring']
+    ${CATEGORY_SELECTED_VERIFY}=       Set Variable    xpath=//span[@class='select2-selection__rendered' and contains(text(), '(BMA2) Mentoring')]
+
+    # 1. Klik dropdown "Category" untuk membukanya
+    Click Element    ${CATEGORY_DROPDOWN_CONTAINER}
+    Wait Until Element Is Visible    css=input.select2-search__field
+    Log    Dropdown 'Category' berhasil dibuka.
+
+    # 2. SCROLL DI DALAM DROPDOWN menggunakan JavaScript
+    ${target_option_element}=    Get WebElement    ${CATEGORY_OPTION_BMA2}
+    Execute Javascript    arguments[0].scrollIntoView(true);    ARGUMENTS    ${target_option_element}
+    Log    Berhasil scroll di dalam dropdown ke opsi '(BMA2) Mentoring'.
+
+    # 3. Klik opsi setelah di-scroll dan terlihat
+    Wait Until Element Is Visible    ${CATEGORY_OPTION_BMA2}
+    Click Element    ${CATEGORY_OPTION_BMA2}
+
+    # 4. Verifikasi bahwa nilai sudah terpilih
+    Wait Until Element Is Visible    ${CATEGORY_SELECTED_VERIFY}
+    Log    VERIFIKASI BERHASIL: Kategori '(BMA2) Mentoring' sudah terpilih.
+
+    # Menggunakan normalize-space() untuk mengatasi spasi ekstra pada teks tombol
+    ${SUBMIT_BUTTON}=    Set Variable    xpath=//button[normalize-space(.)='Submit']
+    
+    # Scroll ke tombolnya untuk memastikan ia terlihat dan bisa diklik
+    Scroll Element Into View    ${SUBMIT_BUTTON}
+    Click Element    ${SUBMIT_BUTTON}
+    Log    Berhasil mengklik tombol Submit.
+    # --- AKHIR PERBAIKAN ---
+    Log      Menunggu 20 detik sebelum skrip selesai...
+    Sleep    20s
